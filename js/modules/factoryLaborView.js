@@ -257,7 +257,7 @@ function renderMenSection(records, todayStr) {
                   <td class="py-3 px-3 font-mono font-bold text-slate-700">${r.date}</td>
                   <td class="py-3 px-3 text-slate-600">
                     <span class="font-mono text-blue-700">${(r.dayShift && r.dayShift.durationText) || '-'}</span> • 
-                    <b>${(r.dayShift && r.dayShift.workerCount) \vert{}\vert{} 0} عمال</b> (${(r.dayShift && r.dayShift.perWorkerWage) || 0} ج/فرد)
+                    <b>${(r.dayShift && r.dayShift.workerCount) || 0} عمال</b> (${(r.dayShift && r.dayShift.perWorkerWage) || 0} ج/فرد)
                   </td>
                   <td class="py-3 px-3 font-mono font-semibold">${Number((r.dayShift && r.dayShift.shiftTotal) || 0).toLocaleString('ar-EG')} ج.م</td>
                   <td class="py-3 px-3 text-slate-600">
