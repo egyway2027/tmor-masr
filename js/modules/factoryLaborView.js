@@ -256,19 +256,19 @@ function renderMenSection(records, todayStr) {
                 <tr class="hover:bg-slate-50">
                   <td class="py-3 px-3 font-mono font-bold text-slate-700">${r.date}</td>
                   <td class="py-3 px-3 text-slate-600">
-                    <span class="font-mono text-blue-700">${r.dayShift?.durationText || '-'}</span> • 
-                    <b>${r.dayShift?.workerCount \vert{}\vert{} 0} عمال</b> (${r.dayShift?.perWorkerWage || 0} ج/فرد)
+                    <span class="font-mono text-blue-700">${(r.dayShift && r.dayShift.durationText) || '-'}</span> • 
+                    <b>${(r.dayShift && r.dayShift.workerCount) \vert{}\vert{} 0} عمال</b> (${(r.dayShift && r.dayShift.perWorkerWage) || 0} ج/فرد)
                   </td>
-                  <td class="py-3 px-3 font-mono font-semibold">${(r.dayShift?.shiftTotal || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono font-semibold">${Number((r.dayShift && r.dayShift.shiftTotal) || 0).toLocaleString('ar-EG')} ج.م</td>
                   <td class="py-3 px-3 text-slate-600">
                     ${r.nightShift && r.nightShift.workerCount > 0 ? `
                       <span class="font-mono text-indigo-700">${r.nightShift.durationText}</span> • 
                       <b>${r.nightShift.workerCount} عمال</b> (${r.nightShift.perWorkerWage} ج/فرد)
                     ` : '<span class="text-slate-400">-</span>'}
                   </td>
-                  <td class="py-3 px-3 font-mono font-semibold">${(r.nightShift?.shiftTotal || 0) > 0 ? `${(r.nightShift.shiftTotal).toLocaleString('ar-EG')} ج.م` : '-'}</td>
-                  <td class="py-3 px-3 font-mono text-rose-600">${r.penalties > 0 ? `-${r.penalties}` : '0'}</td>
-                  <td class="py-3 px-3 font-mono font-black text-emerald-700 bg-emerald-50/50">${(r.netTotal || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono font-semibold">${(r.nightShift && r.nightShift.shiftTotal > 0) ? Number(r.nightShift.shiftTotal).toLocaleString('ar-EG') + ' ج.م' : '-'}</td>
+                  <td class="py-3 px-3 font-mono text-rose-600">${r.penalties > 0 ? '-' + r.penalties : '0'}</td>
+                  <td class="py-3 px-3 font-mono font-black text-emerald-700 bg-emerald-50/50">${Number(r.netTotal || 0).toLocaleString('ar-EG')} ج.م</td>
                   <td class="py-3 px-3 text-center">
                     <button data-id="${r.id}" class="del-men-btn text-rose-600 hover:underline">حذف</button>
                   </td>
@@ -319,15 +319,15 @@ function setupMenTabEvents(refreshApp) {
     });
 
     document.getElementById('menDayDurationBadge').innerText = dayDiff.text;
-    document.getElementById('menDayPerWorkerText').innerText = `${dayShift.perWorkerWage} ج.م`;
-    document.getElementById('menDayTotalText').innerText = `${dayShift.shiftTotal.toLocaleString('ar-EG')} ج.م`;
+    document.getElementById('menDayPerWorkerText').innerText = dayShift.perWorkerWage + ' ج.م';
+    document.getElementById('menDayTotalText').innerText = dayShift.shiftTotal.toLocaleString('ar-EG') + ' ج.م';
 
     document.getElementById('menNightDurationBadge').innerText = nightDiff.text;
-    document.getElementById('menNightPerWorkerText').innerText = `${nightShift.perWorkerWage} ج.م`;
-    document.getElementById('menNightTotalText').innerText = `${nightShift.shiftTotal.toLocaleString('ar-EG')} ج.م`;
+    document.getElementById('menNightPerWorkerText').innerText = nightShift.perWorkerWage + ' ج.م';
+    document.getElementById('menNightTotalText').innerText = nightShift.shiftTotal.toLocaleString('ar-EG') + ' ج.م';
 
-    document.getElementById('menTotalWorkersText').innerText = `${summary.totalWorkers} عامل`;
-    document.getElementById('menFinalNetText').innerText = `${summary.netTotal.toLocaleString('ar-EG')} ج.م`;
+    document.getElementById('menTotalWorkersText').innerText = summary.totalWorkers + ' عامل';
+    document.getElementById('menFinalNetText').innerText = summary.netTotal.toLocaleString('ar-EG') + ' ج.م';
 
     return { dayDiff, dayShift, nightDiff, nightShift, summary };
   }
@@ -504,11 +504,11 @@ function renderWomenSection(records, todayStr) {
                   <td class="py-3 px-3 font-mono font-bold text-slate-700">${r.date}</td>
                   <td class="py-3 px-3 font-bold text-slate-800">${r.workerCount} عاملة</td>
                   <td class="py-3 px-3 text-slate-600 font-mono">${r.durationText || '-'}</td>
-                  <td class="py-3 px-3 font-mono">${(r.totalRegularWage || 0).toLocaleString('ar-EG')} ج.م</td>
-                  <td class="py-3 px-3 font-mono text-rose-600 font-semibold">${(r.totalOvertimeWage || 0).toLocaleString('ar-EG')} ج.م</td>
-                  <td class="py-3 px-3 font-mono text-blue-600 font-semibold">${(r.totalTransport || 0).toLocaleString('ar-EG')} ج.م</td>
-                  <td class="py-3 px-3 font-mono text-rose-600">${r.penalties > 0 ? `-${r.penalties}` : '0'}</td>
-                  <td class="py-3 px-3 font-mono font-black text-rose-700 bg-rose-50/50">${(r.netTotal || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono">${Number(r.totalRegularWage || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono text-rose-600 font-semibold">${Number(r.totalOvertimeWage || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono text-blue-600 font-semibold">${Number(r.totalTransport || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono text-rose-600">${r.penalties > 0 ? '-' + r.penalties : '0'}</td>
+                  <td class="py-3 px-3 font-mono font-black text-rose-700 bg-rose-50/50">${Number(r.netTotal || 0).toLocaleString('ar-EG')} ج.م</td>
                   <td class="py-3 px-3 text-center">
                     <button data-id="${r.id}" class="del-women-btn text-rose-600 hover:underline">حذف</button>
                   </td>
@@ -542,12 +542,12 @@ function setupWomenTabEvents(refreshApp) {
     });
 
     document.getElementById('womenDurationText').innerText = diff.text;
-    document.getElementById('womenPerWorkerBase').innerText = `${calc.regularWagePerWorker} ج.م`;
-    document.getElementById('womenPerWorkerOt').innerText = `${calc.overtimeWagePerWorker} ج.م`;
-    document.getElementById('womenPerWorkerTotal').innerText = `${calc.totalPerWorker} ج.م`;
+    document.getElementById('womenPerWorkerBase').innerText = calc.regularWagePerWorker + ' ج.م';
+    document.getElementById('womenPerWorkerOt').innerText = calc.overtimeWagePerWorker + ' ج.م';
+    document.getElementById('womenPerWorkerTotal').innerText = calc.totalPerWorker + ' ج.م';
 
-    document.getElementById('womenTotalTransportText').innerText = `${calc.totalTransport.toLocaleString('ar-EG')} ج.م`;
-    document.getElementById('womenNetTotalText').innerText = `${calc.netTotal.toLocaleString('ar-EG')} ج.م`;
+    document.getElementById('womenTotalTransportText').innerText = calc.totalTransport.toLocaleString('ar-EG') + ' ج.م';
+    document.getElementById('womenNetTotalText').innerText = calc.netTotal.toLocaleString('ar-EG') + ' ج.م';
 
     return { diff, calc };
   }
@@ -656,9 +656,9 @@ function renderContractorsSection(records) {
                   <td class="py-3 px-3 text-slate-600">${c.description}</td>
                   <td class="py-3 px-3 font-mono">${c.qty}</td>
                   <td class="py-3 px-3 font-mono">${c.price} ج.م</td>
-                  <td class="py-3 px-3 font-mono font-bold">${c.totalAmount.toLocaleString('ar-EG')} ج.م</td>
-                  <td class="py-3 px-3 font-mono text-emerald-600 font-bold">${c.paidAmount.toLocaleString('ar-EG')} ج.م</td>
-                  <td class="py-3 px-3 font-mono font-black ${c.remaining > 0 ? 'text-rose-600' : 'text-slate-400'}">${c.remaining.toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono font-bold">${Number(c.totalAmount || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono text-emerald-600 font-bold">${Number(c.paidAmount || 0).toLocaleString('ar-EG')} ج.م</td>
+                  <td class="py-3 px-3 font-mono font-black ${c.remaining > 0 ? 'text-rose-600' : 'text-slate-400'}">${Number(c.remaining || 0).toLocaleString('ar-EG')} ج.م</td>
                   <td class="py-3 px-3 text-center">
                     <button data-id="${c.id}" class="del-c-btn text-rose-600 hover:underline">حذف</button>
                   </td>
