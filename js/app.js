@@ -7,6 +7,7 @@ import { renderSidebar } from './components/sidebar.js';
 import { renderDashboardView } from './modules/dashboardView.js';
 import { renderEmployeesView } from './modules/employeesView.js';
 import { renderAttendanceView } from './modules/attendanceView.js';
+import { renderOvertimeView } from './modules/overtimeView.js';
 import { renderAdvancesView } from './modules/advancesView.js';
 import { renderPayrollView } from './modules/payrollView.js';
 import { renderFactoryLaborView } from './modules/factoryLaborView.js';
@@ -50,10 +51,12 @@ function renderApp() {
       break;
 
     case 'attendance':
-    case 'overtime':
     case 'penalties':
-      // إدخال الحضور والغياب والإضافي والجزاءات مدمجة تنظيمياً في هذه الشاشة
       contentContainer.innerHTML = renderAttendanceView(renderApp);
+      break;
+
+    case 'overtime':
+      contentContainer.innerHTML = renderOvertimeView(renderApp);
       break;
 
     case 'advances':
@@ -89,7 +92,9 @@ function renderApp() {
   }
 }
 
-// بدء تشغيل المنظومة بمجرد تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
+// تشغيل آمن يتجاوز مشكلة تأخر تحميل الموديولات
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderApp);
+} else {
   renderApp();
-});
+}
