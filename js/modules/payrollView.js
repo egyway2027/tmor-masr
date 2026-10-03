@@ -18,9 +18,11 @@ export function renderPayrollView(refreshApp, selectedMonth = null) {
   const employees = store.getAll('employees');
   const allAttendance = store.getAll('attendance');
   const allAdvances = store.getAll('advances');
+  const allOvertime = store.getAll('employee_overtime');
 
-  // تصفية بيانات الحضور للشهر المحدد
+  // تصفية بيانات الحضور والإضافي للشهر المحدد
   const monthAttendance = allAttendance.filter(att => att.month === currentMonth);
+  const monthOvertime = allOvertime.filter(ot => ot.date && ot.date.startsWith(currentMonth));
 
   // احتساب استحقاقات واستقطاعات كل موظف مسجل
   const payrollRows = employees.map(emp => {
@@ -34,6 +36,13 @@ export function renderPayrollView(refreshApp, selectedMonth = null) {
       penalties: 0
     };
 
+    // تجميع ساعات الإضافي المسجلة للموظف في شاشة الإضافي لهذا الشهر
+    const loggedOvertimeMinutes = monthOvertime
+      .filter(ot => ot.empCode === emp.code)
+      .reduce((sum, ot) => sum + (Number(ot.overtimeMinutes) || 0), 0);
+    const loggedOvertimeHours = loggedOvertimeMinutes / 60;
+    const totalOvertimeHours = (Number(att.overtimeHours) || 0) + loggedOvertimeHours;
+
     // 2. فحص السلف النشطة غير المسددة لحساب قسط الشهر
     const activeAdvance = allAdvances.find(adv => adv.empCode === emp.code && !adv.isSettled);
     const advanceDeduction = activeAdvance ? Math.min(activeAdvance.monthlyInstallment, activeAdvance.remainingBalance) : 0;
@@ -44,7 +53,7 @@ export function renderPayrollView(refreshApp, selectedMonth = null) {
       workDays: att.workDays,
       absenceDays: att.absenceDays,
       overtimeDays: att.overtimeDays,
-      overtimeHours: att.overtimeHours,
+      overtimeHours: totalOvertimeHours,
       incentives: att.incentives,
       advanceDeduction: advanceDeduction,
       directPenalties: att.penalties
